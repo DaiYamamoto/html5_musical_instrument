@@ -42,6 +42,7 @@ function main(){
 
         playSound(id)
     });
+    initSelect();
 }
 
 function idWrap(i) {
@@ -50,12 +51,25 @@ function idWrap(i) {
 
 const synth = new Tone.Synth().toMaster();
 
-const MAP = { 1: 'C5', 2: 'D5', 3:'E5',4:'F5',5:'G5',6:'A5',7:'B5',
+const C_MAJOR = { 1: 'C5', 2: 'D5', 3:'E5',4:'F5',5:'G5',6:'A5',7:'B5',
     101: 'C#5',102: 'D#5',103: 'F#5',104: 'G#5',105: 'A#5',
 };
+const D_MAJOR = {1: 'D5', 2: 'E5', 3:'F#5',4:'G5',5:'A5',6:'B5',7:'C#6',
+    101: 'D#5',102: 'E#5',103: 'G#5',104: 'A#5',105: 'B#5',
+};
+let mapData = C_MAJOR;
 function playSound(id) {
-    console.log(MAP[id]);
-    synth.triggerAttackRelease(MAP[id], '4n');
+    console.log(mapData[id]);
+    synth.triggerAttackRelease(mapData[id], '4n');
 }
 
 main();
+
+function initSelect() {
+    $('#select').change(function () {
+        const val = $(this).val();
+        console.log(val);
+        if(val === 'c_major') mapData = C_MAJOR;
+        if(val === 'd_major') mapData = D_MAJOR;
+    })
+}
