@@ -24,58 +24,24 @@ function createBlackRectangle(x,y,id) {
         .attr("fill", "#081745")   // 塗りは水色にする
         .attr("stroke-width", 2)    // 線幅を指定
 }
-const WHITE_KEY = [0,2,4,5,7,9,11]
-const BLACK_KEY  = [1,3,999,6,8,10]; //999 is dummy.
 
-function createKey(num) {
-    if(  WHITE_KEY.includes(num) ) {
-        let index = WHITE_KEY.indexOf(num);
-        createWhiteRectangle(40 + index*100, 200, num);
-    }
-    if (BLACK_KEY.includes(num) ){
-        let index = BLACK_KEY.indexOf(num);
-        createBlackRectangle( 90+ index*100 , 40, num)
-    }
-}
-function main(){
-    const octave = 2;
-    svg.attr("width", 800*octave).attr("height", 400);
-    for(let i=0;i<12;i++ ) createKey(i);
-
-    let oto = new Oto('c_major');
-    $("rect").click(function () {
-
-        const id = $(this).attr('id');
-
-        oto.playSound(id);
-    });
-    function initSelect() {
-        $('#select').change(function () {
-            const val = $(this).val();
-            console.log(val);
-            oto = new Oto(val);
-        })
-    }
-    initSelect();
-}
 
 const SYNTH = new Tone.Synth().toMaster();
-const FIRST_NOTE = { 'c_major': 'C1','d_major': 'D1'};
 
 class Oto{
     constructor(scaleName){
-        this.list = this.init(scaleName);
+        this.list = Oto.init(scaleName);
         this.oct  = 4;
     }
-    init(scaleName){
+    static init(scaleName){
         const scale = [];
-        scale[0] =  FIRST_NOTE[scaleName];
+        scale[0] =  Oto.FIRST_NOTE[scaleName];
         for(let i =0;i<12*7;i++) {
-            scale[i + 1] = this.raiseHarf(scale[i]);
+            scale[i + 1] = Oto.raiseHalf(scale[i]);
         }
         return scale;
     }
-    raiseHarf(moji){
+    static raiseHalf(moji){
         let key = moji.substr(0,1)
         let oct = moji.slice(-1)
         let len = moji.length;
@@ -106,6 +72,42 @@ class Oto{
         let note = this.list[absId];
         SYNTH.triggerAttackRelease(note, '4n');
     }
+    static get FIRST_NOTE(){ return { 'c_major': 'C1','d_major': 'D1'} };
 }
 
-main();
+class Main{
+    constructor(){
+        const octave = 2; // number of keys on keyboard
+        svg.attr("width", 800*octave).attr("height", 400);
+        for(let i=0;i<12;i++ ) this.createKey(i);
+
+        this.oto = new Oto('c_major');
+        $("rect").click(function () {
+            const id = $(this).attr('id');
+            this.oto.playSound(id);
+        });
+        this.initSelect();
+    }
+
+    createKey(num) {
+        if (Main.WHITE_KEY.includes(num)) {
+            let index = Main.WHITE_KEY.indexOf(num);
+            createWhiteRectangle(40 + index * 100, 200, num);
+        }
+        if (Main.BLACK_KEY.includes(num)) {
+            let index = Main.BLACK_KEY.indexOf(num);
+            createBlackRectangle(90 + index * 100, 40, num)
+        }
+    }
+    initSelect() {
+        $('#select').change(function () {
+            const val = $(this).val();
+            console.log(val);
+            this.oto = new Oto(val);
+        })
+    }
+    static get WHITE_KEY(){return [0,2,4,5,7,9,11]; }
+    static get BLACK_KEY(){return [1,3,999,6,8,10]; } //999 is dummy.
+}
+
+const main = new Main();
