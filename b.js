@@ -79,7 +79,7 @@ class Main{
     constructor(){
         const octave = 2; // number of keys on keyboard
         svg.attr("width", 800*octave).attr("height", 400);
-        for(let i=0;i<12 *octave;i++ ) this.createKey(i);
+        for(let i=0;i<12 *octave;i++ ) Main.createKey(i);
 
         this.oto = new Oto('c_major');
 
@@ -97,21 +97,49 @@ class Main{
         $('#octave').change(function () {
             const val = $(this).val();
             oto_.setOct(parseInt(val, 10));
-
+        });
+        $('#position').change(function () {
+            const val0 = $(this).val();
+            d3.select('#result').selectAll("svg").remove();
+            svg = d3.select("#result").append("svg");
+            svg.attr("width", 800*octave).attr("height", 400);
+            for(let i=0;i<12 *octave;i++ ) Main.createKey(i,parseInt(val0, 10));
+            $("rect").click(function () {
+                const id = $(this).attr('id');
+                console.log(id);
+                oto_.playSound(id);
+            });
+            $('#select').change(function () {
+                const val = $(this).val();
+                console.log(val);
+                oto_ = new Oto(val);
+            });
+            $('#octave').change(function () {
+                const val = $(this).val();
+                oto_.setOct(parseInt(val, 10));
+            });
         })
     }
 
-    createKey(num) {
+    static createKey(num, position = 0) {
+        let pos =0;
+        let note = num;
+        if(position<0){
+            num = 12 + num + position ;
+            if(Main.WHITE_KEY.indexOf(12 + position) !== -1) pos = Main.WHITE_KEY.indexOf(12 + position) ;
+            if(Main.BLACK_KEY.indexOf(12 + position) !== -1) pos = Main.BLACK_KEY.indexOf(12 + position) ;
+            note = num - 12;
+        }
         const key = num % 12;
         const oct = Math.floor(num/12) ;
 
         if (Main.WHITE_KEY.includes(key)) {
             let index = Main.WHITE_KEY.indexOf(key);
-            createWhiteRectangle(40 + (index + oct*7)* 100 , 200, num);
+            createWhiteRectangle(40 + (index + oct*7 - pos)* 100 , 200, note);
         }
         if (Main.BLACK_KEY.includes(key)) {
             let index = Main.BLACK_KEY.indexOf(key);
-            createBlackRectangle(90 + (index + oct*7) * 100, 40, num)
+            createBlackRectangle(90 + (index + oct*7 - pos) * 100 , 40, note)
         }
     }
 
