@@ -75,7 +75,7 @@ class Oto{
         let note = this.list[absId];
         SYNTH.triggerAttackRelease(note, '4n');
     }
-    static get FIRST_NOTE(){ return { 'c_major': 'C1','d_major': 'D1'} };
+    static get FIRST_NOTE(){ return { 'c_major': 'C1','d_major': 'D1', 'e_major': 'E1','f_major':'F1','g_major':'G1','a_major':'A1','b_major':'B1'}};
 }
 
 class Main{
