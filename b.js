@@ -79,7 +79,7 @@ class Main{
     constructor(){
         const octave = 2; // number of keys on keyboard
         svg.attr("width", 800*octave).attr("height", 400);
-        for(let i=0;i<12;i++ ) this.createKey(i);
+        for(let i=0;i<12 *octave;i++ ) this.createKey(i);
 
         this.oto = new Oto('c_major');
 
@@ -102,13 +102,16 @@ class Main{
     }
 
     createKey(num) {
-        if (Main.WHITE_KEY.includes(num)) {
-            let index = Main.WHITE_KEY.indexOf(num);
-            createWhiteRectangle(40 + index * 100, 200, num);
+        const key = num % 12;
+        const oct = Math.floor(num/12) ;
+
+        if (Main.WHITE_KEY.includes(key)) {
+            let index = Main.WHITE_KEY.indexOf(key);
+            createWhiteRectangle(40 + (index + oct*7)* 100 , 200, num);
         }
-        if (Main.BLACK_KEY.includes(num)) {
-            let index = Main.BLACK_KEY.indexOf(num);
-            createBlackRectangle(90 + index * 100, 40, num)
+        if (Main.BLACK_KEY.includes(key)) {
+            let index = Main.BLACK_KEY.indexOf(key);
+            createBlackRectangle(90 + (index + oct*7) * 100, 40, num)
         }
     }
 
