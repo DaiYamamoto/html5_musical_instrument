@@ -64,6 +64,9 @@ class Oto{
             if( 'G' === key)   return 'A' + oct ;
         }
     }
+    setScale(s){
+        this.list = Oto.init(s);
+    }
     setOct(n){
         this.oct = n - 1;
     }
@@ -92,7 +95,7 @@ class Main{
         $('#select').change(function () {
             const val = $(this).val();
             console.log(val);
-            oto_ = new Oto(val);
+            oto_.setScale(val);
         });
         $('#octave').change(function () {
             const val = $(this).val();
@@ -112,7 +115,7 @@ class Main{
             $('#select').change(function () {
                 const val = $(this).val();
                 console.log(val);
-                oto_ = new Oto(val);
+                oto_.setScale(val);
             });
             $('#octave').change(function () {
                 const val = $(this).val();
@@ -145,6 +148,12 @@ class Main{
 
     static get WHITE_KEY(){return [0,2,4,5,7,9,11]; }
     static get BLACK_KEY(){return [1,3,999,6,8,10]; } //999 is dummy.
+
+    getOto(){return this.oto}
 }
 
 const main = new Main();
+const kET_TO_ID = {'a':-1,'s': 0, 'e':1, 'd':2, 'r':3, 'f':4, 'g':5, 'y':6,'h':7,'u':8,'j':9,'i':10,'k':11,'l':12};
+function key_press() {
+    main.getOto().playSound( kET_TO_ID[event.key]  );
+  }
