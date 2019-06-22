@@ -82,11 +82,23 @@ class Main{
         for(let i=0;i<12;i++ ) this.createKey(i);
 
         this.oto = new Oto('c_major');
+
+        let oto_ = this.oto;
         $("rect").click(function () {
             const id = $(this).attr('id');
-            this.oto.playSound(id);
+            console.log(id);
+            oto_.playSound(id);
         });
-        this.initSelect();
+        $('#select').change(function () {
+            const val = $(this).val();
+            console.log(val);
+            oto_ = new Oto(val);
+        });
+        $('#octave').change(function () {
+            const val = $(this).val();
+            oto_.setOct(parseInt(val, 10));
+
+        })
     }
 
     createKey(num) {
@@ -99,13 +111,7 @@ class Main{
             createBlackRectangle(90 + index * 100, 40, num)
         }
     }
-    initSelect() {
-        $('#select').change(function () {
-            const val = $(this).val();
-            console.log(val);
-            this.oto = new Oto(val);
-        })
-    }
+
     static get WHITE_KEY(){return [0,2,4,5,7,9,11]; }
     static get BLACK_KEY(){return [1,3,999,6,8,10]; } //999 is dummy.
 }
