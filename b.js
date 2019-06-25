@@ -149,6 +149,9 @@ class Main{
 
 const main = new Main();
 const kET_TO_ID = {'a':-1,'s': 0, 'e':1, 'd':2, 'r':3, 'f':4, 'g':5, 'y':6,'h':7,'u':8,'j':9,'i':10,'k':11,'l':12};
-function key_press() {
-    main.getOto().playSound( kET_TO_ID[event.key]  );
-  }
+function keyDown() {
+    main.getOto().playSound( kET_TO_ID[event.key]);
+}
+function keyUp() {
+    main.getOto().stopSound();
+}
