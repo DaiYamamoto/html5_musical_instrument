@@ -73,55 +73,50 @@ class Oto{
     playSound(id){
         let absId =  parseInt(id, 10)  + this.oct * 12;
         let note = this.list[absId];
-        SYNTH.triggerAttackRelease(note, '4n');
+        SYNTH.triggerAttack(note);
+    }
+    stopSound(){
+        SYNTH.triggerRelease();
     }
     static get FIRST_NOTE(){ return { 'c_major': 'C1','d_major': 'D1', 'e_major': 'E1','f_major':'F1','g_major':'G1','a_major':'A1','b_major':'B1'}};
 }
 
 class Main{
     constructor(){
+        const oto = new Oto('c_major');
+        this.oto = oto;
+        const createKeyboard_ = this.createKeyboard;
+        createKeyboard_(oto);
+        $('#position').change(function () {
+            d3.select('#result').selectAll("svg").remove();
+            svg = d3.select("#result").append("svg");
+            svg.attr("width", 800*2).attr("height", 400)
+            const pos =  parseInt($(this).val(), 10);
+            createKeyboard_(oto, pos);
+        });
+    }
+    createKeyboard(oto, position=0){
         const octave = 2; // number of keys on keyboard
         svg.attr("width", 800*octave).attr("height", 400);
-        for(let i=0;i<12 *octave;i++ ) Main.createKey(i);
+        for(let i=0;i<12 *octave;i++ ) Main.createKey(i,position);
 
-        this.oto = new Oto('c_major');
-
-        let oto_ = this.oto;
-        $("rect").click(function () {
+        let rect = $("rect");
+        rect.mousedown(function () {
             const id = $(this).attr('id');
-            console.log(id);
-            oto_.playSound(id);
+            oto.playSound(id);
         });
+        rect.mouseup(function () {
+            oto.stopSound();
+        });
+
         $('#select').change(function () {
             const val = $(this).val();
-            console.log(val);
-            oto_.setScale(val);
+            oto.setScale(val);
         });
         $('#octave').change(function () {
             const val = $(this).val();
-            oto_.setOct(parseInt(val, 10));
+            oto.setOct(parseInt(val, 10));
         });
-        $('#position').change(function () {
-            const val0 = $(this).val();
-            d3.select('#result').selectAll("svg").remove();
-            svg = d3.select("#result").append("svg");
-            svg.attr("width", 800*octave).attr("height", 400);
-            for(let i=0;i<12 *octave;i++ ) Main.createKey(i,parseInt(val0, 10));
-            $("rect").click(function () {
-                const id = $(this).attr('id');
-                console.log(id);
-                oto_.playSound(id);
-            });
-            $('#select').change(function () {
-                const val = $(this).val();
-                console.log(val);
-                oto_.setScale(val);
-            });
-            $('#octave').change(function () {
-                const val = $(this).val();
-                oto_.setOct(parseInt(val, 10));
-            });
-        })
     }
 
     static createKey(num, position = 0) {
